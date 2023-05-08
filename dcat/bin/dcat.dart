@@ -5,14 +5,17 @@ import 'dart:io';
 import 'package:args/args.dart';
 
 const lineNumber = 'line-number';
-void main(List<String> arguments) {
+void main(List<String> arguments) async {
   exitCode = 0;
   final parser = ArgParser()..addFlag(lineNumber, negatable: false, abbr: 'n');
 
   ArgResults argResults = parser.parse(arguments);
   final paths = argResults.rest;
 
-  my_dcat(paths, showLineNumbers: argResults[lineNumber] as bool);
+  await my_dcat(paths, showLineNumbers: argResults[lineNumber] as bool);
+
+  Writing_file();
+  Getting_environment_information();
 }
 
 Future<void> my_dcat(List<String> paths, {bool showLineNumbers = false}) async {
@@ -36,6 +39,21 @@ Future<void> my_dcat(List<String> paths, {bool showLineNumbers = false}) async {
       }
     }
   }
+}
+
+Future<void> Writing_file() async {
+  final quotes = File('quotes.txt');
+  const stronger = 'That which does not kill us makes us stronges. -Nietzsches';
+
+  await quotes.writeAsString(stronger, mode: FileMode.append);
+}
+
+void Getting_environment_information() {
+  final envVarMap = Platform.environment;
+
+  print('PWD = ${envVarMap['PWD']}');
+  print('LOGNAME = ${envVarMap['LOGNAME']}');
+  print('PATH = ${envVarMap['PATH']}');
 }
 
 Future<void> _handleError(String path) async {
